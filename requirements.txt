@@ -1,0 +1,8 @@
+Django==2.2.6
+django-ranged-response==0.2.0
+django-simple-captcha==0.5.12
+Pillow==6.2.0
+PyMySQL==0.9.3
+pytz==2019.3
+six==1.12.0
+sqlparse==0.3.0
