@@ -1,12 +1,18 @@
 from django.shortcuts import render
+from django.shortcuts import redirect
 from django.shortcuts import HttpResponse
 # Create your views here.
 from django.views.decorators.csrf import csrf_exempt
 import json
 from assets import models
+from django.shortcuts import get_object_or_404
 
 
 class NewAsset:
+    '''
+    从客户端来的数据经过检测后的处理模块
+    【合法数据加入 NewAssetApprovalZone 库中】
+    '''
     def __init__(self, request, data):
         self.request = request
         self.data = data
@@ -65,3 +71,24 @@ def report(request):
         else:
             return HttpResponse('没有资产hostname，请检查数据！')
     return HttpResponse('成功接收数据！')
+
+
+# 主页逻辑模块
+def index(request):
+    # 未登录限制访问主页
+    if not request.session.get('is_login', None):
+        return redirect('/login/')
+    return render(request, 'assets/index.html')
+    # return render(request, 'login/index.html')
+
+
+def dashboard(request):
+    # 未登录限制访问主页
+    if not request.session.get('is_login', None):
+        return redirect('/login/')
+    return render(request, 'assets/dashboard.html', locals())
+
+
+def detail(request, asset_id):
+    asset = get_object_or_404(models.Asset, id=asset_id)
+    return render(request, 'assets/detail.html', locals())

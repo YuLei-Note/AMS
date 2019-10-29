@@ -15,17 +15,23 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from login import views
+from login import views as login_views
+from assets import views as assets_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+
     # 登陆模块url，后期整理出去到：login.urls.py
-    path('index/', views.index),
-    path('login/', views.login),
-    path('register/', views.register),
-    path('logout/', views.logout),
+
+    path('login/', login_views.login),
+    path('register/', login_views.register),
+    path('logout/', login_views.logout),
     path('captcha/', include('captcha.urls')),
-    path('confirm/', views.user_confirm),
+    path('confirm/', login_views.user_confirm),
+
     # 资产管理模块url，模块路径：assets.urls.py
-    path('assets/', include('assets.urls'))
+    path('assets/', include('assets.urls')),
+    path('index/', assets_views.index),
+    # path('dashboard/', assets_views.dashboard),
+    # path('detail/', assets_views.detail),
 ]

@@ -38,12 +38,13 @@ def send_mail(email, code):
     msg.send()
 
 
-# 主页逻辑模块
-def index(request):
-    # 未登录限制访问主页
-    if not request.session.get('is_login', None):
-        return redirect('/login/')
-    return render(request, 'login/index.html')
+# # 主页逻辑模块
+# def index(request):
+#     # 未登录限制访问主页
+#     if not request.session.get('is_login', None):
+#         return redirect('/login/')
+#     return render(request, 'assets/index.html')
+#     # return render(request, 'login/index.html')
 
 
 # 登陆模块
@@ -81,6 +82,7 @@ def login(request):
                 request.session['user_id'] = user.id
                 request.session['user_name'] = user.name
                 request.session['u_team'] = user.get_u_team_display()
+                request.session['email'] = user.email
                 return redirect('/index/')
             else:
                 message = '密码不正确！'
