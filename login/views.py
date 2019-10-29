@@ -8,6 +8,7 @@ import hashlib
 from django.conf import settings
 
 
+# 加密函数
 def hash_code(s, salt='mysite'):
     h = hashlib.sha256()
     s += salt
@@ -15,6 +16,7 @@ def hash_code(s, salt='mysite'):
     return h.hexdigest()
 
 
+# 生成确认码
 def make_confirm_string(user):
     now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     code = hash_code(user.name, now)
@@ -22,6 +24,7 @@ def make_confirm_string(user):
     return code
 
 
+# 邮件发送模块
 def send_mail(email, code):
     from django.core.mail import EmailMultiAlternatives
     subject = '来自xxx的注册确认邮件'
@@ -29,12 +32,13 @@ def send_mail(email, code):
     html_content = '''
     <p>感谢注册<a href='http://{}/confirm/?code={}' target=blank>点击完成注册</a></p>
     <p>此链接有效期为{}天！</p>
-    '''.format('127.0.0.1:8000', code, settings.CONFIRM_DAYS)
+    '''.format('192.168.129.79:8000', code, settings.CONFIRM_DAYS)
     msg = EmailMultiAlternatives(subject, text_content, settings.EMAIL_HOST_USER, [email])
     msg.attach_alternative(html_content, 'text/html')
     msg.send()
 
 
+# 主页逻辑模块
 def index(request):
     # 未登录限制访问主页
     if not request.session.get('is_login', None):
@@ -42,6 +46,7 @@ def index(request):
     return render(request, 'login/index.html')
 
 
+# 登陆模块
 def login(request):
     # 不允许重复登陆
     if request.session.get('is_login', None):
@@ -75,6 +80,7 @@ def login(request):
                 request.session['is_login'] = True
                 request.session['user_id'] = user.id
                 request.session['user_name'] = user.name
+                request.session['u_team'] = user.get_u_team_display()
                 return redirect('/index/')
             else:
                 message = '密码不正确！'
@@ -85,6 +91,7 @@ def login(request):
     return render(request, 'login/login.html', locals())
 
 
+# 注册模块
 def register(request):
     if request.session.get('is_login', None):
         return redirect('/index/')
@@ -97,7 +104,8 @@ def register(request):
             password1 = register_form.cleaned_data.get('password1')
             password2 = register_form.cleaned_data.get('password2')
             email = register_form.cleaned_data.get('email')
-            sex = register_form.cleaned_data.get('sex')
+            # sex = register_form.cleaned_data.get('sex')
+            u_team = register_form.cleaned_data.get('u_team')
 
             if password1 != password2:
                 message = '两次输入的密码不同！'
@@ -116,7 +124,8 @@ def register(request):
                 new_user.name = username
                 new_user.password = password1
                 new_user.email = email
-                new_user.sex = sex
+                # new_user.sex = sex
+                new_user.u_team = u_team
                 new_user.save()
 
                 code = make_confirm_string(new_user)
@@ -130,6 +139,7 @@ def register(request):
     return render(request, 'login/register.html', locals())
 
 
+# 注销模块
 def logout(request):
     if not request.session.get('is_login', None):
         return redirect('/login/')
@@ -144,6 +154,7 @@ def logout(request):
     return redirect('/login/')
 
 
+# 用户注册确认
 def user_confirm(request):
     # 从请求的地址中获取确认码
     code = request.GET.get('code', None)

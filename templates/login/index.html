@@ -5,7 +5,7 @@
     <title>Main Page</title>
 </head>
 <body>
-<h1>{{ request.session.user_name }}！ 欢迎回来！</h1>
+<h1> {{ request.session.user_name }} {{ request.session.u_team }}</h1>
 <p>
     <a href="/logout/">退出</a>
 </p>

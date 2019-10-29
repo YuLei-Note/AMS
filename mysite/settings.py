@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'login',
+    'assets',
     'captcha',
 ]
 
@@ -79,11 +80,13 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         # 'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        'NAME': 'xxx',
-        'USER': 'xxx',
-        'PASSWORD': 'xxx',
-        'HOST': 'xxx',
-        'PORT': 'xxx'
+        'NAME': 'jarvis',
+        'USER': 'root',
+        'PASSWORD': '*963.*963.ly',
+        # 'PASSWORD': '123456',
+        'HOST': '192.168.129.9',
+        # 'HOST': '192.168.54.137',
+        'PORT': '3306'
     }
 }
 
@@ -128,8 +131,8 @@ STATIC_URL = '/static/'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 #
-EMAIL_HOST = 'xxx'
+EMAIL_HOST = 'mail.ee-post.com'
 EMAIL_PORT = 25
-EMAIL_HOST_USER = 'xxx'
-EMAIL_HOST_PASSWORD = 'xxx'
+EMAIL_HOST_USER = 'jasper_lei@huatek.com'
+EMAIL_HOST_PASSWORD = '*963.*963.leiyu'
 CONFIRM_DAYS = 3
