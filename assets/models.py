@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-
 # Create your models here.
 
 
@@ -11,7 +10,7 @@ class Asset(models.Model):
         ('networkdevice', '网络设备'),
         ('server', '服务器'),
         ('storage', '存储设备'),
-        ('Computer', '办公电脑'),
+        ('computer', '办公电脑'),
         ('ithardware', 'IT配件'),
         ('software', '软件资产')
     )
@@ -38,7 +37,7 @@ class Asset(models.Model):
     m_time = models.DateTimeField(auto_now_add=True, verbose_name='更新日期')
 
     def __str__(self):
-        return '{}: {}'.format(self.get_asset_type_display(), self.hostname)
+        return '%s %s' % (self.get_asset_type_display(), self.hostname)
 
     class Meta:
         verbose_name = '资产总表'
@@ -82,7 +81,7 @@ class Server(models.Model):
     os_type = models.CharField('操作系统', max_length=64, blank=True, null=True)
 
     def __str__(self):
-        return self.asset.name, self.get_sub_asset_type_display()
+        return self.asset.name
 
     class Meta:
         verbose_name = '服务器'
@@ -115,7 +114,7 @@ class Computer(models.Model):
     os = models.CharField(max_length=64, default='Windows', blank=True, null=True)
 
     def __str__(self):
-        return self.asset.name, self.get_sub_asset_type_display()
+        return '{} {}'.format(self.get_sub_asset_type_display(), self.asset.name)
 
     class Meta:
         verbose_name = '电脑资产'
@@ -223,11 +222,10 @@ class NewAssetApprovalZone(models.Model):
     team = models.CharField('所在组', max_length=32, null=True, blank=True)
     asset_type = models.CharField(choices=asset_type_choice, default='办公电脑', max_length=64, blank=True, null=True,
                                   verbose_name='资产类型')
+    sub_asset_type = models.CharField(max_length=32, default='台式机', blank=True, null=True, verbose_name='子类型')
     model = models.CharField(max_length=128, blank=True, null=True, verbose_name='型号')
     ram_size = models.PositiveIntegerField(blank=True, null=True, verbose_name='内存大小')
     cpu_model = models.CharField(max_length=128, blank=True, null=True, verbose_name='CPU型号')
-    # cpu_count = models.PositiveIntegerField('CPU数量', default=1, blank=True, null=True)
-    # cpu_core_count = models.PositiveIntegerField('CPU核心数量', blank=True, null=True)
     os = models.CharField('操作系统', max_length=64, blank=True, null=True)
     data = models.TextField('资产数据')
     c_time = models.DateTimeField('上传日期', auto_now_add=True)

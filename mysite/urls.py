@@ -31,7 +31,4 @@ urlpatterns = [
 
     # 资产管理模块url，模块路径：assets.urls.py
     path('assets/', include('assets.urls')),
-    path('index/', assets_views.index),
-    # path('dashboard/', assets_views.dashboard),
-    # path('detail/', assets_views.detail),
 ]

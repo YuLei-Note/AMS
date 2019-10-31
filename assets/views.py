@@ -32,6 +32,8 @@ class NewAsset:
             'ram_size': self.data.get('sum_capacity'),
             'cpu_model': self.data.get('cpu_model'),
             'os': self.data.get('os_type'),
+            'user': self.data.get('user'),
+            'team': self.data.get('team'),
         }
         models.NewAssetApprovalZone.objects.update_or_create(hostname=self.data['hostname'], defaults=defaults)
 
@@ -78,14 +80,48 @@ def index(request):
     # 未登录限制访问主页
     if not request.session.get('is_login', None):
         return redirect('/login/')
-    return render(request, 'assets/index.html')
-    # return render(request, 'login/index.html')
+    if request.session['is_superuser']:
+        assets = models.Asset.objects.all()
+        return render(request, 'assets/index.html', locals())
+    else:
+        # try:
+        assets = models.Asset.objects.filter(user=request.session['email'])
+        return render(request, 'assets/index.html', locals())
+
+
+def userpage(request):
+    if not request.session.get('is_login', None):
+        return redirect('/login/')
+    email = request.session['email']
+    # assets = models.Asset.objects.filter(email=email)
+    print(email)
+    return render(request, 'assets/userpage.html', locals())
 
 
 def dashboard(request):
     # 未登录限制访问主页
     if not request.session.get('is_login', None):
         return redirect('/login/')
+    total = models.Asset.objects.count()
+    # 在线、闲置、损坏、报废的数量/比率
+    upline = models.Asset.objects.filter(status=0).count()
+    up_rate = round(upline / total * 100)
+
+    offline = models.Asset.objects.filter(status=1).count()
+    o_rate = round(offline / total * 100)
+
+    breakdown = models.Asset.objects.filter(status=2).count()
+    bd_rate = round(breakdown / total * 100)
+
+    scrapped = models.Asset.objects.filter(status=3).count()
+    sp_rate = round(scrapped / total * 100)
+
+    # 各种资产数量
+    networkdevice_number = models.NetworkDevice.objects.count()
+    server_number = models.Server.objects.count()
+    storage_number = models.Storage.objects.count()
+    computer_number = models.Computer.objects.count()
+
     return render(request, 'assets/dashboard.html', locals())
 
 

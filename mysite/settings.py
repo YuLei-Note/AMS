@@ -86,7 +86,9 @@ DATABASES = {
         # 'PASSWORD': '123456',
         'HOST': '192.168.129.9',
         # 'HOST': '192.168.54.137',
-        'PORT': '3306'
+        'PORT': '3306',
+        'OPTIONS': {'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"},
+        'AUTOCOMMIT': True,
     }
 }
 

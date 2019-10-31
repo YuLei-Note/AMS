@@ -26,14 +26,14 @@ class User(models.Model):
     name = models.CharField(max_length=32, unique=True)
     password = models.CharField(max_length=128)
     email = models.EmailField(unique=True)
-    # sex = models.CharField(max_length=32, choices=gender, default='男')
+    is_superuser = models.BooleanField(default=False)
     u_team = models.CharField(max_length=32, choices=team, default='Company')
     c_time = models.DateTimeField(auto_now_add=True)
     # 确认状态，默认是False
     has_confirmed = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.name, self.get_u_team_display()
+        return '{}: {}'.format(self.name, self.get_u_team_display())
 
     class Meta:
         ordering = ['-c_time']

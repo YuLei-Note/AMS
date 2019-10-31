@@ -5,14 +5,26 @@ import json
 def log(log_type, msg=None, asset=None, new_asset=None, request=None):
     '''
     日志模块
-    :param log_type:
-    :param msg:
-    :param asset:
-    :param new_asset:
-    :param request:
+    :param log_type:日志类型
+    :param msg:错误信息
+    :param asset:记录上线对象
+    :param new_asset:记录待审批资产对象
+    :param request:request
     :return:
     '''
-    pass
+    event = models.EventLog()
+    if log_type == 'upline':
+        event.name = '{} - 录入成功！'.format(asset.hostname)
+        event.asset = asset
+        event.event_type = 4
+        event.detail = '【编号】:{}，【使用人】:{}，资产上线成功！'.format(asset.hostname, asset.user)
+        event.user = request.user
+    elif log_type == 'approved_failed':
+        event.name = '{} - 审批失败！'.format(new_asset.hostname)
+        event.new_asset = new_asset
+        event.detail = '资产编号:{}，使用人{}，审批失败！{}'.format(new_asset.hostname, new_asset.user, msg)
+        event.user = request.user
+    event.save()
 
 
 class ApproveAsset:
@@ -37,22 +49,21 @@ class ApproveAsset:
 
     def _computer_upline(self):
         asset = self._create_asset()
-        self._create_cpu(asset)
-        self._create_disk(asset)
-        self._create_nic(asset)
-        self._create_ram(asset)
-        self._delete_original_asset()
-        # try:
-        #     self._create_cpu(asset)
-        #     self._create_disk(asset)
-        #     self._create_nic(asset)
-        #     self._create_ram(asset)
-        #     self._delete_original_asset()
-        # except Exception as e:
-        #     asset.delete()
-        #     log('approve_failed', msg=e, new_asset=self.new_asset, request=self.request)
-        #     print(e)
-        #     return False
+        try:
+            self._create_computer(asset)
+            self._create_cpu(asset)
+            self._create_disk(asset)
+            self._create_nic(asset)
+            self._create_ram(asset)
+            self._delete_original_asset()
+            log('upline', asset=asset, request=self.request)
+            print('新办公电脑上线！')
+            return True
+        except Exception as e:
+            asset.delete()
+            log('approve_failed', msg=e, new_asset=self.new_asset, request=self.request)
+            print(e)
+            return False
         # else:
         #     log('upline', asset=asset, request=self.request)
         #     print('新办公电脑上线！')
@@ -65,7 +76,7 @@ class ApproveAsset:
         '''
         # request.user 获取当前管理员的信息，作为审批人添加到资产总表中
         asset = models.Asset.objects.create(asset_type=self.new_asset.asset_type,
-                                            name='{}:{}'.format(self.new_asset.asset_type, self.new_asset.hostname),
+                                            name=self.new_asset.hostname,
                                             hostname=self.new_asset.hostname,
                                             user=self.new_asset.user,
                                             team=self.new_asset.team,
@@ -102,6 +113,7 @@ class ApproveAsset:
         # 缺少sub_asset_type参数
         models.Computer.objects.create(asset=asset,
                                        hostname=self.new_asset.hostname,
+                                       sub_asset_type=self.new_asset.sub_asset_type,
                                        os=self.new_asset.os,
                                        )
         pass

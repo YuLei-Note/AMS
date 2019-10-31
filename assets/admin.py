@@ -35,14 +35,21 @@ class NewAssetAdmin(admin.ModelAdmin):
 class AssetAdmin(admin.ModelAdmin):
     list_display = [
         'asset_type',
-        # 'name',冗余字段
         'hostname',
         'status',
         'user',
         'team',
         'approved_by',
-        # 'c_time',
         'm_time',
+    ]
+
+
+class EventAdmin(admin.ModelAdmin):
+    list_display = [
+        'name',
+        'event_type',
+        'date',
+        'user',
     ]
 
 
@@ -55,5 +62,5 @@ admin.site.register(models.CPU)
 admin.site.register(models.RAM)
 admin.site.register(models.NIC)
 admin.site.register(models.Disk)
-admin.site.register(models.EventLog)
+admin.site.register(models.EventLog, EventAdmin)
 admin.site.register(models.NewAssetApprovalZone, NewAssetAdmin)

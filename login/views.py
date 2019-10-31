@@ -51,7 +51,7 @@ def send_mail(email, code):
 def login(request):
     # 不允许重复登陆
     if request.session.get('is_login', None):
-        return redirect('/index/')
+        return redirect('/assets/index/')
 
     if request.method == 'POST':
         login_form = forms.UserForm(request.POST)
@@ -77,13 +77,24 @@ def login(request):
                 return render(request, 'login/login.html', locals())
 
             if user.password == password:
-                # 往session字典中写入用户状态和数据
-                request.session['is_login'] = True
-                request.session['user_id'] = user.id
-                request.session['user_name'] = user.name
-                request.session['u_team'] = user.get_u_team_display()
-                request.session['email'] = user.email
-                return redirect('/index/')
+                if user.is_superuser:
+                    # 往session字典中写入用户状态和数据
+                    request.session['is_login'] = True
+                    request.session['user_id'] = user.id
+                    request.session['user_name'] = user.name
+                    request.session['u_team'] = user.get_u_team_display()
+                    request.session['email'] = user.email
+                    request.session['is_superuser'] = user.is_superuser
+                    return redirect('/assets/index/')
+                else:
+                    # 往session字典中写入用户状态和数据
+                    request.session['is_login'] = True
+                    request.session['user_id'] = user.id
+                    request.session['user_name'] = user.name
+                    request.session['u_team'] = user.get_u_team_display()
+                    request.session['email'] = user.email
+                    request.session['is_superuser'] = user.is_superuser
+                    return redirect('/assets/userpage/')
             else:
                 message = '密码不正确！'
                 return render(request, 'login/login.html', locals())

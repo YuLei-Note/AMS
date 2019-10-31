@@ -184,25 +184,25 @@ desired effect
                                      alt="User Image">
 
                                 <p>
-                                    系统管理员
-                                    <small>2019-4-12</small>
+                                    {{ request.session.email}}
+                                    <small>{{ request.session.u_team }}</small>
                                 </p>
                             </li>
                             <!-- Menu Body -->
-                            <li class="user-body">
-                                <div class="row">
-                                    <div class="col-xs-4 text-center">
-                                        <a href="#">Followers</a>
-                                    </div>
-                                    <div class="col-xs-4 text-center">
-                                        <a href="#">Sales</a>
-                                    </div>
-                                    <div class="col-xs-4 text-center">
-                                        <a href="#">Friends</a>
-                                    </div>
-                                </div>
-                                <!-- /.row -->
-                            </li>
+                            <!--                            <li class="user-body">-->
+                            <!--                                <div class="row">-->
+                            <!--                                    <div class="col-xs-4 text-center">-->
+                            <!--                                        <a href="#">Followers</a>-->
+                            <!--                                    </div>-->
+                            <!--                                    <div class="col-xs-4 text-center">-->
+                            <!--                                        <a href="#">Sales</a>-->
+                            <!--                                    </div>-->
+                            <!--                                    <div class="col-xs-4 text-center">-->
+                            <!--                                        <a href="#">Friends</a>-->
+                            <!--                                    </div>-->
+                            <!--                                </div>-->
+                            <!--                                &lt;!&ndash; /.row &ndash;&gt;-->
+                            <!--                            </li>-->
                             <!-- Menu Footer-->
                             <li class="user-footer">
                                 <div class="pull-left">
@@ -283,10 +283,10 @@ desired effect
     <footer class="main-footer">
         <!-- To the right -->
         <div class="pull-right hidden-xs">
-            http://www.liujiangblog.com
+            http://192.168.129.79
         </div>
         <!-- Default to the left -->
-        <strong>Copyright &copy; 2019 <a href="http://www.liujiangblog.com" target="_blank">刘江的Django教程</a>.</strong>
+        <strong>Copyright &copy; 2019 <a href="http://192.168.129.79:8000/login" target="_blank">AMS</a>.</strong>
         All rights reserved.
     </footer>
 
